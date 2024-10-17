@@ -1,0 +1,10 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+/cube-controls.iml
+/jsLinters/eslint.xml
+/modules.xml
+/inspectionProfiles/Project_Default.xml
+/vcs.xml
