@@ -9,6 +9,7 @@ import {
   TouchSensor,
   useSensors,
 } from "@dnd-kit/core";
+import { OrgControls } from "~/components/OrgControls";
 
 // List of organizations
 const organizations = [
@@ -106,62 +107,67 @@ const OrganizationGrid = () => {
   };
 
   return (
-    <DndContext
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
-      sensors={sensors}
-    >
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 p-6">
-        {organizations.map((org) =>
-          String(org.id) !== String(droppedItem) ? (
-            <Draggable
-              key={org.id}
-              id={org.id}
-              name={org.name}
-              isInDropArea={false}
-            />
-          ) : (
-            <div
-              key={org.id}
-              className="w-24 h-24 bg-gray-200 rounded-lg shadow-md opacity-50 pointer-events-none"
-            >
-              {org.name}
-            </div>
-          ),
-        )}
-      </div>
-
-      <div className="mt-10">
-        <h3 className="text-lg font-semibold text-center mb-4">
-          Drop Area (Only 1 item allowed)
-        </h3>
-        <DroppableArea>
-          <div className="grid grid-cols-1 gap-6">
-            {droppedItem ? (
+    <>
+      <DndContext
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+        sensors={sensors}
+      >
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 p-6">
+          {organizations.map((org) =>
+            String(org.id) !== String(droppedItem) ? (
               <Draggable
-                key={droppedItem}
-                id={droppedItem}
-                name={organizations.find((org) => org.id === droppedItem).name}
-                isInDropArea={true}
+                key={org.id}
+                id={org.id}
+                name={org.name}
+                isInDropArea={false}
               />
             ) : (
-              <p className="text-gray-500">Drop an item here</p>
-            )}
-          </div>
-        </DroppableArea>
-      </div>
+              <div
+                key={org.id}
+                className="w-24 h-24 bg-gray-200 rounded-lg shadow-md opacity-50 pointer-events-none"
+              >
+                {org.name}
+              </div>
+            ),
+          )}
+        </div>
 
-      <DragOverlay>
-        {activeItem ? (
-          <div className="flex items-center justify-center w-24 h-24 bg-gray-200 rounded-lg shadow-md">
-            <p className="text-sm font-semibold text-gray-600">
-              {activeItem.name}
-            </p>
-          </div>
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+        <div className="mt-10">
+          <h3 className="text-lg font-semibold text-center mb-4">
+            Drop Area (Only 1 item allowed)
+          </h3>
+          <DroppableArea>
+            <div className="grid grid-cols-1 gap-6">
+              {droppedItem ? (
+                <Draggable
+                  key={droppedItem}
+                  id={droppedItem}
+                  name={
+                    organizations.find((org) => org.id === droppedItem).name
+                  }
+                  isInDropArea={true}
+                />
+              ) : (
+                <p className="text-gray-500">Drop an item here</p>
+              )}
+            </div>
+          </DroppableArea>
+        </div>
+
+        <DragOverlay>
+          {activeItem ? (
+            <div className="flex items-center justify-center w-24 h-24 bg-gray-200 rounded-lg shadow-md">
+              <p className="text-sm font-semibold text-gray-600">
+                {activeItem.name}
+              </p>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+      <OrgControls />
+    </>
   );
 };
 
