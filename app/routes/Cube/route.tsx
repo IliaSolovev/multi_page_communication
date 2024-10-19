@@ -1,22 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LocalStorage } from "~/localStorage";
+import { PDFViewer } from "~/components/PDFViewer";
+import {
+  PDF_ACTION_KEY,
+  PDF_ACTIONS,
+  SET_FILE_KEY,
+} from "~/components/OrgControls/actions";
 
 const storage = new LocalStorage("cube-controls");
 
 const Cube = () => {
   const [fileUrl, setFileUrl] = useState("");
   const [fileType, setFileType] = useState("");
-  const ref = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
-  const pdf = useRef<HTMLVideoElement>(null);
+  const [PDFPageNumber, setPDFPageNumber] = useState<number>(1);
 
+  // SET file
   useEffect(() => {
-    // Listen for messages from the Controls page
     const handleMessage = (data: any) => {
       setFileUrl(data.fileUrl);
       setFileType(data.fileType);
+      storage.clearKey(SET_FILE_KEY);
 
-      if (data.fileType === "mp4" && ref.current) {
+      if (data.fileType === "mp4") {
         setTimeout(() => {
           if (video.current) {
             video.current.play();
@@ -25,29 +31,40 @@ const Cube = () => {
       }
     };
 
-    return storage.listen("file", handleMessage);
+    return storage.listen(SET_FILE_KEY, handleMessage);
   }, []);
 
-  return (
-    <div>
-      <div className="mt-4 h-[100vh]" ref={ref}>
-        {fileType === "pdf" && (
-          <iframe
-            src={fileUrl}
-            width="100%"
-            height="100%"
-            title={`View ${fileType.toUpperCase()}`}
-          />
-        )}
+  //PDF controls
+  useEffect(() => {
+    const handleMessage = (data: PDF_ACTIONS) => {
+      setPDFPageNumber((v) => (data === PDF_ACTIONS.PREV_PAGE ? v - 1 : v + 1));
+      storage.clearKey(PDF_ACTION_KEY);
+    };
 
-        {fileType === "mp4" && (
+    return storage.listen(PDF_ACTION_KEY, handleMessage);
+  }, []);
+
+  if (fileType === "pdf") {
+    return (
+      <div className="w-full h-[100vh]">
+        <PDFViewer pdfUrl={fileUrl} pageNumber={PDFPageNumber} />
+      </div>
+    );
+  }
+
+  if (fileType === "mp4") {
+    return (
+      <div>
+        <div className="mt-4 h-[100vh]">
           <video width="100%" ref={video}>
             <source src={fileUrl} type="video/mp4" />
           </video>
-        )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 };
 
 export default Cube;

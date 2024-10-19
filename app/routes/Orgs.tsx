@@ -9,7 +9,7 @@ import {
   TouchSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { OrgControls } from "~/components/OrgControls";
+import { OrgControls } from "~/components/OrgControls/OrgControls";
 
 // List of organizations
 const organizations = [

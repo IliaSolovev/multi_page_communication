@@ -16,6 +16,12 @@ export class LocalStorage {
     localStorage.setItem(prefixedKey, JSON.stringify(value));
   }
 
+  clearKey(key: string) {
+    const prefixedKey = this._getKey(key);
+
+    localStorage.removeItem(prefixedKey);
+  }
+
   // Method to get an item from localStorage with prefix
   get(key: string) {
     const prefixedKey = this._getKey(key);
